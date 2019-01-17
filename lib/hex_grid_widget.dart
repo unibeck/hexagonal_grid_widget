@@ -1,4 +1,4 @@
-library hex_grid_widget;
+library hexagonal_grid_widget;
 
 import 'dart:math';
 
@@ -33,12 +33,15 @@ class HexGridWidget<T extends HexGridChild> extends StatefulWidget {
   set offset(Offset offset) {
     _state.offset = offset;
   }
+
+  GlobalKey get containerKey => _state._containerKey;
 }
 
 // ignore: conflicting_generic_interfaces
 class _HexGridWidgetState<T extends HexGridChild> extends State<HexGridWidget>
     with SingleTickerProviderStateMixin, AfterLayoutMixin<HexGridWidget> {
   final GlobalKey _containerKey = GlobalKey();
+  bool _isAfterFirstLayout = false;
 
   HexGridContext _hexGridContext;
   List<T> _children;
@@ -72,6 +75,8 @@ class _HexGridWidgetState<T extends HexGridChild> extends State<HexGridWidget>
   void initState() {
     super.initState();
 
+    _isAfterFirstLayout = false;
+
     _controller = AnimationController(vsync: this)
       ..addListener(_handleFlingAnimation);
   }
@@ -85,6 +90,8 @@ class _HexGridWidgetState<T extends HexGridChild> extends State<HexGridWidget>
 
   @override
   void afterFirstLayout(BuildContext context) {
+    _isAfterFirstLayout = true;
+
     final double containerWidth = this.containerWidth;
     final double containerHeight = this.containerHeight;
 
@@ -238,6 +245,17 @@ class _HexGridWidgetState<T extends HexGridChild> extends State<HexGridWidget>
 
   @override
   Widget build(BuildContext context) {
+    Widget childToShow;
+    if (!_isAfterFirstLayout) {
+      childToShow = Container();
+    } else {
+      childToShow = Stack(
+          children: _buildHexWidgets(
+              _hexGridContext.maxSize / _hexGridContext.densityFactor,
+              xViewPos,
+              yViewPos));
+    }
+
     return GestureDetector(
       onPanDown: _handlePanDown,
       onPanUpdate: _handlePanUpdate,
@@ -247,11 +265,7 @@ class _HexGridWidgetState<T extends HexGridChild> extends State<HexGridWidget>
             color: Theme.of(context).backgroundColor,
           ),
           key: _containerKey,
-          child: Stack(
-              children: _buildHexWidgets(
-                  _hexGridContext.maxSize / _hexGridContext.densityFactor,
-                  xViewPos,
-                  yViewPos))),
+          child: childToShow),
     );
   }
 
@@ -347,7 +361,7 @@ class _HexGridWidgetState<T extends HexGridChild> extends State<HexGridWidget>
     return Positioned(
         top: hexToPixel.x,
         left: hexToPixel.y,
-        child: hexGridChild.toHexWidget(_hexGridContext, size, uiHex));
+        child: hexGridChild.toHexWidget(context, _hexGridContext, size, uiHex));
   }
 
   void _centerHexLayout() {

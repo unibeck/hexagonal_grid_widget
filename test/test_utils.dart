@@ -32,7 +32,8 @@ class TestHexGridChild extends HexGridChild {
   TestHexGridChild(this.index);
 
   @override
-  Widget toHexWidget(HexGridContext hexGridContext, double size, UIHex hex) {
+  Widget toHexWidget(BuildContext context, HexGridContext hexGridContext,
+      double size, UIHex hex) {
     return Container(
         padding: EdgeInsets.all((hexGridContext.maxSize - size) / 2),
         child: Container(
