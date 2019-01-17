@@ -1,8 +1,7 @@
 name: hexagonal_grid_widget
-description: A hex layout widget that supports infinite omniscroll and is highly customizable. Only
-  the hex widgets that are viewable are rendered while all others are not, thus making this widget
-  very efficient even at larger datasets.
-version: 1.0.0
+description: A hex layout widget with infinite omniscroll and is highly customizable. It's
+  very efficent as only the hex widgets that are viewable are rendered while all others are not
+version: 1.0.1
 author: Jonathan Beckman <jonathantbeckman@gmail.com>
 homepage: https://gitlab.com/jbeckman/hexagonal_grid_widget
 

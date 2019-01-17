@@ -78,7 +78,9 @@ void main() {
         findsNothing);
 
     //Artificially scroll (Set offset) to the top-left by maxHexWidgetSize
-    Offset center = tester.getCenter(find.byKey(hexGridWidget.containerKey));
+    Offset center = tester.getCenter(find.descendant(
+        of: find.byWidget(hexGridWidget),
+        matching: find.byType(GestureDetector)));
     hexGridWidget.offset =
         center + Offset(_maxHexWidgetSize, _maxHexWidgetSize);
 
@@ -130,7 +132,9 @@ void main() {
         findsNothing);
 
     //Artificially scroll (Set offset) to the top-left by doubling center
-    Offset center = tester.getCenter(find.byKey(hexGridWidget.containerKey));
+    Offset center = tester.getCenter(find.descendant(
+        of: find.byWidget(hexGridWidget),
+        matching: find.byType(GestureDetector)));
     hexGridWidget.offset = center + center;
 
     //Wait for the state to catch up

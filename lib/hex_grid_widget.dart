@@ -10,6 +10,7 @@ import 'package:hexagonal_grid/hexagonal_grid.dart';
 import 'package:hexagonal_grid_widget/hex_grid_child.dart';
 import 'package:hexagonal_grid_widget/hex_grid_context.dart';
 
+@immutable
 class HexGridWidget<T extends HexGridChild> extends StatefulWidget {
   HexGridWidget(
       {@required this.hexGridContext,
@@ -20,21 +21,16 @@ class HexGridWidget<T extends HexGridChild> extends StatefulWidget {
   final List<T> children;
 
   final ValueChanged<Offset> scrollListener;
-
-  _HexGridWidgetState _state;
+  final ValueNotifier<Offset> offsetNotifier = ValueNotifier(Offset(0, 0));
 
   @override
-  State<StatefulWidget> createState() {
-    _state = _HexGridWidgetState(hexGridContext, children, scrollListener);
-    return _state;
-  }
+  State<StatefulWidget> createState() => _HexGridWidgetState(
+      hexGridContext, children, scrollListener, offsetNotifier);
 
   //Set the x and y scroll offset
   set offset(Offset offset) {
-    _state.offset = offset;
+    offsetNotifier.value = offset;
   }
-
-  GlobalKey get containerKey => _state._containerKey;
 }
 
 // ignore: conflicting_generic_interfaces
@@ -59,15 +55,24 @@ class _HexGridWidgetState<T extends HexGridChild> extends State<HexGridWidget>
 
   AnimationController _controller;
   ValueChanged<Offset> _scrollListener;
+  ValueNotifier<Offset> _offsetNotifier;
 
-  _HexGridWidgetState(HexGridContext hexGridContext, List<T> children,
-      ValueChanged<Offset> scrollListener) {
+  _HexGridWidgetState(
+      HexGridContext hexGridContext,
+      List<T> children,
+      ValueChanged<Offset> scrollListener,
+      ValueNotifier<Offset> offsetNotifier) {
     _hexGridContext = hexGridContext;
     _children = children;
     _hexLayout = UIHex.toSpiralHexLayout(children);
 
     if (scrollListener != null) {
       _scrollListener = scrollListener;
+    }
+
+    if (offsetNotifier != null) {
+      _offsetNotifier = offsetNotifier;
+      _offsetNotifier.addListener(updateOffsetFromNotifier);
     }
   }
 
@@ -84,6 +89,11 @@ class _HexGridWidgetState<T extends HexGridChild> extends State<HexGridWidget>
   @override
   void dispose() {
     _controller?.dispose();
+
+    //Don't dispose as other's might be using it. It would be up to the owner,
+    // in this case HexGridWidget, to dispose of it. So only clean up after
+    // ourselves (this class, _HexGridWidgetState)
+    _offsetNotifier?.removeListener(updateOffsetFromNotifier);
 
     super.dispose();
   }
@@ -105,6 +115,8 @@ class _HexGridWidgetState<T extends HexGridChild> extends State<HexGridWidget>
     //Center the hex grid to origin
     offset = Offset(origin.x, origin.y);
   }
+
+  void updateOffsetFromNotifier() => offset = _offsetNotifier.value;
 
   set offset(Offset offset) {
     setState(() {
