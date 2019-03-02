@@ -2,13 +2,12 @@ library hexagonal_grid_widget;
 
 import 'dart:math';
 
-import 'package:flutter/material.dart';
-import 'package:tuple/tuple.dart';
 import 'package:after_layout/after_layout.dart';
-
+import 'package:flutter/material.dart';
 import 'package:hexagonal_grid/hexagonal_grid.dart';
 import 'package:hexagonal_grid_widget/hex_grid_child.dart';
 import 'package:hexagonal_grid_widget/hex_grid_context.dart';
+import 'package:tuple/tuple.dart';
 
 @immutable
 class HexGridWidget<T extends HexGridChild> extends StatefulWidget {
@@ -24,8 +23,8 @@ class HexGridWidget<T extends HexGridChild> extends StatefulWidget {
   final ValueNotifier<Offset> offsetNotifier = ValueNotifier(Offset(0, 0));
 
   @override
-  State<StatefulWidget> createState() => _HexGridWidgetState(
-      hexGridContext, children, scrollListener, offsetNotifier);
+  State<StatefulWidget> createState() =>
+      _HexGridWidgetState(hexGridContext, scrollListener, offsetNotifier);
 
   //Set the x and y scroll offset
   set offset(Offset offset) {
@@ -40,7 +39,6 @@ class _HexGridWidgetState<T extends HexGridChild> extends State<HexGridWidget>
   bool _isAfterFirstLayout = false;
 
   HexGridContext _hexGridContext;
-  List<T> _children;
   List<UIHex> _hexLayout;
   double _hexLayoutRadius = 0.0;
 
@@ -59,12 +57,9 @@ class _HexGridWidgetState<T extends HexGridChild> extends State<HexGridWidget>
 
   _HexGridWidgetState(
       HexGridContext hexGridContext,
-      List<T> children,
       ValueChanged<Offset> scrollListener,
       ValueNotifier<Offset> offsetNotifier) {
     _hexGridContext = hexGridContext;
-    _children = children;
-    _hexLayout = UIHex.toSpiralHexLayout(children);
 
     if (scrollListener != null) {
       _scrollListener = scrollListener;
@@ -80,6 +75,7 @@ class _HexGridWidgetState<T extends HexGridChild> extends State<HexGridWidget>
   void initState() {
     super.initState();
 
+    _hexLayout = UIHex.toSpiralHexLayout(widget.children);
     _isAfterFirstLayout = false;
 
     _controller = AnimationController(vsync: this)
@@ -122,13 +118,6 @@ class _HexGridWidgetState<T extends HexGridChild> extends State<HexGridWidget>
     setState(() {
       xViewPos = offset.dx;
       yViewPos = offset.dy;
-    });
-  }
-
-  set children(List<T> children) {
-    setState(() {
-      _children = children;
-      _hexLayout = UIHex.toSpiralHexLayout(children);
     });
   }
 
@@ -291,7 +280,7 @@ class _HexGridWidgetState<T extends HexGridChild> extends State<HexGridWidget>
     final double containerHeight = this.containerHeight;
 
     for (int i = 0; i < _hexLayout.length; i++) {
-      Positioned hexWidget = _createPositionWidgetForHex(_children[i],
+      Positioned hexWidget = _createPositionWidgetForHex(widget.children[i],
           _hexLayout[i], flatLayout, containerWidth, containerHeight);
 
       if (hexWidget != null) {
@@ -309,30 +298,16 @@ class _HexGridWidgetState<T extends HexGridChild> extends State<HexGridWidget>
           originHexToPixel.y < origin.x - _hexGridContext.maxSize / 2 ||
           originHexToPixel.x > origin.y + _hexGridContext.maxSize / 2 ||
           originHexToPixel.x < origin.y - _hexGridContext.maxSize / 2) {
-        final ThemeData themeData = Theme.of(context);
-        Color color;
-
-        switch (themeData.brightness) {
-          case Brightness.light:
-            color = themeData.primaryColorLight;
-            break;
-          case Brightness.dark:
-            color = themeData.primaryColorDark;
-            break;
-        }
-
         hexWidgetList.add(Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
                 padding: EdgeInsets.only(bottom: 16),
                 child: RaisedButton(
-                    child: Text("Center"),
-                    elevation: 4,
-                    color: color,
-                    textTheme: ButtonTextTheme.normal,
-                    onPressed: () => _centerHexLayout(),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(32.0))))));
+                  child: Text("Center"),
+                  elevation: 4,
+                  textTheme: ButtonTextTheme.normal,
+                  onPressed: () => _centerHexLayout(),
+                ))));
       }
     }
 
