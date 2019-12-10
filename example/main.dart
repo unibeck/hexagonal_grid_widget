@@ -15,6 +15,7 @@ class HexGridWidgetExample extends StatelessWidget {
   final double _scaleFactor = 0.2;
   final double _densityFactor = 1.75;
   final double _velocityFactor = 0.3;
+  final bool _flatLayout = true;
   final int _numOfHexGridChildWidgets = 10;
 
   @override
@@ -27,7 +28,7 @@ class HexGridWidgetExample extends StatelessWidget {
         body: HexGridWidget(
             children: createHexGridChildren(_numOfHexGridChildWidgets),
             hexGridContext: HexGridContext(_minHexWidgetSize, _maxHexWidgetSize,
-                _scaleFactor, _densityFactor, _velocityFactor)));
+                _scaleFactor, _densityFactor, _velocityFactor, _flatLayout)));
   }
 
   //This would likely be a service (RESTful or DB) that retrieves some data and

@@ -9,6 +9,9 @@ ios/.generated/
 ios/Flutter/Generated.xcconfig
 ios/Runner/GeneratedPluginRegistrant.*
 
+# Example dir
+example/.packages
+
 # IntelliJ related
 *.iml
 *.ipr

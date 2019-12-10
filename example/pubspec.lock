@@ -2,12 +2,12 @@
 # See https://dart.dev/tools/pub/glossary#lockfile
 packages:
   after_layout:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: after_layout
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.7"
+    version: "1.0.7+2"
   async:
     dependency: transitive
     description:
@@ -47,12 +47,19 @@ packages:
     source: sdk
     version: "0.0.0"
   hexagonal_grid:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: hexagonal_grid
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.4"
+    version: "1.0.5"
+  hexagonal_grid_widget:
+    dependency: "direct main"
+    description:
+      path: ".."
+      relative: true
+    source: path
+    version: "1.0.2"
   matcher:
     dependency: transitive
     description:
@@ -136,12 +143,12 @@ packages:
     source: hosted
     version: "0.2.5"
   tuple:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: tuple
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.3"
   typed_data:
     dependency: transitive
     description:

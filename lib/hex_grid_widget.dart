@@ -272,8 +272,16 @@ class _HexGridWidgetState<T extends HexGridChild> extends State<HexGridWidget>
 
   List<Widget> _buildHexWidgets(
       double hexSize, double layoutOriginX, double layoutOriginY) {
-    HexLayout flatLayout = HexLayout.orientFlat(
-        Point(hexSize, hexSize), Point(layoutOriginY, layoutOriginX));
+
+    HexLayout layout;
+    if (_hexGridContext.flatLayout) {
+      layout = HexLayout.orientFlat(
+          Point(hexSize, hexSize), Point(layoutOriginY, layoutOriginX));
+    } else {
+      layout = HexLayout.orientPointy(
+          Point(hexSize, hexSize), Point(layoutOriginY, layoutOriginX));
+    }
+
     List<Widget> hexWidgetList = [];
 
     final double containerWidth = this.containerWidth;
@@ -281,7 +289,7 @@ class _HexGridWidgetState<T extends HexGridChild> extends State<HexGridWidget>
 
     for (int i = 0; i < _hexLayout.length; i++) {
       Positioned hexWidget = _createPositionWidgetForHex(widget.children[i],
-          _hexLayout[i], flatLayout, containerWidth, containerHeight);
+          _hexLayout[i], layout, containerWidth, containerHeight);
 
       if (hexWidget != null) {
         hexWidgetList.add(hexWidget);
@@ -289,10 +297,10 @@ class _HexGridWidgetState<T extends HexGridChild> extends State<HexGridWidget>
     }
 
     if (_hexLayout.isNotEmpty) {
-      final Point originHexToPixel = _hexLayout.first.hex.toPixel(flatLayout);
+      final Point originHexToPixel = _hexLayout.first.hex.toPixel(layout);
 
       _hexLayoutRadius =
-          originHexToPixel.distanceTo(_hexLayout.last.hex.toPixel(flatLayout));
+          originHexToPixel.distanceTo(_hexLayout.last.hex.toPixel(layout));
 
       if (originHexToPixel.y > origin.x + _hexGridContext.maxSize / 2 ||
           originHexToPixel.y < origin.x - _hexGridContext.maxSize / 2 ||

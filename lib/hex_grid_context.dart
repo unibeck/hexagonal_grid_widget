@@ -19,6 +19,10 @@ class HexGridContext {
   /// the fling animation will play
   final double velocityFactor;
 
+  ///Controls weather the geometry of the layout is pointy or flat. Defaults
+  /// to flat
+  final bool flatLayout;
+
   HexGridContext(this.minSize, this.maxSize, this.scaleFactor,
-      this.densityFactor, this.velocityFactor);
+      this.densityFactor, this.velocityFactor, [this.flatLayout = true]);
 }

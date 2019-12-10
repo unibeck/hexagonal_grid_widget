@@ -1,4 +1,4 @@
-name: hexagonal_grid_widget
+name: hexagonal_grid_widget_example
 description: A hex layout widget with infinite omniscroll and is highly customizable. It's extremely efficient as only the hex widgets that are viewable are rendered while all others are not.
 version: 1.0.3
 author: Jonathan Beckman <jonathantbeckman@gmail.com>
@@ -10,9 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  hexagonal_grid: ^1.0.4
-  tuple: ^1.0.2
-  after_layout: ^1.0.7
+  hexagonal_grid_widget:
+    path: ../
 
 dev_dependencies:
   flutter_test:
